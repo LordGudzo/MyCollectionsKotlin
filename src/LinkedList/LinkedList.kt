@@ -1,6 +1,8 @@
 package LinkedList
 
-class LinkedList<E> () {
+import MyMutableCollection
+
+class LinkedList<E> (): MyMutableCollection<E> {
     //store information about root or first node in myLinkedList.
     private var _root: Node<E>? = null
 
@@ -12,23 +14,73 @@ class LinkedList<E> () {
 
 
     /**
-     * If myLinkedList is empty first node adds to the root, else to the child of current node.
+     * If myLinkedList is empty first node adds to the root, else creates as the child of last node.
      *
-     * @param value the value for adds.
+     * @param element the value for adds.
      */
-    fun add(value:E){
-        val currentNode: Node<E> = Node(value)
+    override fun add(element:E){
+        val createdNode: Node<E> = Node(element)
 
         if (_size == 0){
-            _root = currentNode
-            _end = currentNode
+            _root = createdNode
+            _end = createdNode
         } else {
-            _end?.setChild(currentNode)
-            currentNode.setParent(_end)
-            _end = currentNode
+            _end?.setChild(createdNode)
+            createdNode.setParent(_end)
+            _end = createdNode
         }
 
         _size++
+    }
+
+    override fun add(index: Int, element: E) {
+        val indexNode = getNodeWithIndex(index)
+        val indexNodeChild:Node<E>? = indexNode?.getChild()
+        val createdNode: Node<E> = Node(element)
+        // MyLinkedList(0 1 2 3) ->(index: 2, element: 13) -> MyLinkedList(0 1 indexNode:2 createdNode:13 3)
+        if(indexNodeChild != null) {  //check with 1 element
+            indexNode.setChild(createdNode) //2 -> 13
+            createdNode.setParent(indexNode)
+            createdNode.setChild(indexNodeChild) //13 -> 3
+            indexNodeChild.setParent(createdNode)
+        } else {
+            indexNode?.setChild(createdNode)
+            createdNode.setParent(indexNode)
+            _end = createdNode
+        }
+        _size++
+    }
+
+    override fun remove(index: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun isEmpty(): Boolean {
+        return _size == 0
+    }
+
+    override fun contains(element: E): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun indexOf(element: E): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun lastIndexOf(element: E): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun clear() {
+        TODO("Not yet implemented")
+    }
+
+    override fun first(): E {
+        TODO("Not yet implemented")
+    }
+
+    override fun last(): E {
+        TODO("Not yet implemented")
     }
 
     /**
@@ -37,16 +89,41 @@ class LinkedList<E> () {
      * @param index of node.
      * @return value from node.
      */
-    fun get(index: Int): E? {
+    override fun get(index: Int): E {
         if (_size == 0) {
             throw java.lang.IndexOutOfBoundsException("Index: $index size: $_size")
+        }
+        val indexNode: Node<E> = getNodeWithIndex(index)!!
+        return indexNode.value
+    }
+
+    override fun getOrNull(index: Int): E? {
+        if (_size == 0) {
+            return null
         }
         checkIndex(index)
         val indexNode: Node<E> = getNodeWithIndex(index)!!
         return indexNode.value
     }
 
-    fun getSize() = _size
+    override fun toString(): String {
+        val result = StringBuilder("[")
+        var currentNode: Node<E>? = _root
+        while (currentNode?.getChild() != null) {
+            result.append(currentNode.value)
+            result.append(", ")
+            currentNode = currentNode.getChild()
+        }
+        result.append(currentNode?.value)
+
+        return "$result]"
+    }
+
+    override fun iterator(): Iterator<E> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getSize() = _size
 
     /**
      * If index will be more than size of myArrayList or less than zero - new IndexOutOfBoundsException.
@@ -66,6 +143,7 @@ class LinkedList<E> () {
      * @return node with this index.
      */
     private fun getNodeWithIndex(index: Int): Node<E>? {
+        checkIndex(index)
         var current: Node<E>? = _root
         var count = 0
         while (count != index) {
@@ -74,6 +152,8 @@ class LinkedList<E> () {
         }
         return current
     }
+
+
 
 }
 

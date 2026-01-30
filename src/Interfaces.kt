@@ -1,20 +1,20 @@
-interface MyCollection<T>: Iterable<T> {
-    val size: Int
-    fun isEmpty(): Boolean
-    fun contains(element: T): Boolean
-    fun indexOf(element: T): Int
-    fun lastIndexOf(element: T): Int
+interface MyCollection<E>: Iterable<E> {
+    fun isEmpty(): Boolean                       //+
+    fun getSize(): Int
+    fun contains(element: E): Boolean
+    fun indexOf(element: E): Int
+    fun lastIndexOf(element: E): Int
     fun clear()
-    fun first(): T
-    fun last(): T
-    fun get(index: Int): T
-    fun getOrNull(index: Int): T?
+    fun first(): E
+    fun last(): E
+    fun get(index: Int): E                      //+
+    fun getOrNull(index: Int): E?               //+
     override fun toString(): String
-    override fun iterator(): Iterator<T>   
+    override fun iterator(): Iterator<E>   
 }
 
-interface MyMutableCollection<T>: MyCollection<T>  {
-    fun add(element: T)
-    fun add(index: Int, element: T)  
+interface MyMutableCollection<E>: MyCollection<E>  {
+    fun add(element: E)                        //+
+    fun add(index: Int, element: E)
     fun remove(index: Int)  //deletes elements by index
 }
